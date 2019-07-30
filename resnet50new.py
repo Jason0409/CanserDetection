@@ -108,11 +108,14 @@ train_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, sampl
 valid_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, sampler=valid_sampler, num_workers=num_workers)
 test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, num_workers=num_workers)
 
-model_conv = ptcv_get_model("cbam_resnet50", pretrained=True)
+model_conv = torchvision.models.resnet50(pretrained=True)
+# model_conv = torchvision.models.resnet101(pretrained=True)
+# model_conv = torchvision.models.resnet152(pretrained=True)
+# model_conv = ptcv_get_model("cbam_resnet50", pretrained=True)
 
 model_conv.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
 model_conv.last_linear = nn.Sequential(nn.Dropout(0.6), nn.Linear(in_features=2048, out_features=512, bias=True), nn.SELU(),
-                                      nn.Dropout(0.8),  nn.Linear(in_features=512, out_features=1, bias=True))
+                                      nn.Dropout(0.8),  nn.Linear(in_features=512, out_features=2, bias=True))
 
 model_conv.cuda()
 # model_conv.load_state_dict(torch.load("model2.pt"))
